@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
+import { Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { axiosInstance, endpoints } from '../api/apiClient';
 import { useNavigation } from '@react-navigation/native';
@@ -68,19 +69,22 @@ const HomeScreen: React.FC = () => {
     : categories.slice(0, 4);
   const lastThreeCenters = centers.slice(-3);
 
+  const screenWidth = Dimensions.get('window').width;
+  const aspectRatio = 1480 / 700; // Calculate the aspect ratio
+
   return (
     <ScrollView style={styles.container}>
       {/* Header Section */}
       <View style={styles.header}>
-        <Image source={require('../assets/icons/логотип-1.png')} style={styles.logo} />
-        <Icon name="notifications-none" size={28} color="#555" style={styles.bellIcon} />
+        {/* <Image source={require('../assets/icons/логотип-1.png')} style={styles.logo} /> */}
+        {/* <Icon name="notifications-none" size={28} color="#555" style={styles.bellIcon} /> */}
       </View>
 
       {/* Top Banner Section */}
       <View style={styles.topSection}>
         <Image
-          source={{ uri: "https://t4.ftcdn.net/jpg/04/30/13/89/360_F_430138951_otmGEbVlWbrpfbRBJaNMvkqVXTkCRx76.jpg" }}
-          style={styles.bannerImage}
+          source={require('../assets/images/main page banner.png')}
+          style={[styles.bannerImage, { height: screenWidth / aspectRatio }]} // Set height based on the aspect ratio
         />
       </View>
 
@@ -106,7 +110,6 @@ const HomeScreen: React.FC = () => {
             {displayedCategories.map((category) => (
               <CategoryCard
                 key={category.id}
-                title={category.name}
                 imageUrl={category.image || ""}
                 categoryId={category.id}
                 navigation={navigation}
@@ -157,21 +160,20 @@ const HomeScreen: React.FC = () => {
 };
 
 // Category Card Component
-const CategoryCard: React.FC<{ 
-  title: string; 
-  imageUrl: string; 
-  categoryId: number; 
-  navigation: CenterDetailScreenNavigationProp 
-}> = ({ title, imageUrl, categoryId, navigation }) => (
+const CategoryCard: React.FC<{
+  imageUrl: string;
+  categoryId: number;
+  navigation: CenterDetailScreenNavigationProp
+}> = ({ imageUrl, categoryId, navigation }) => (
   <Pressable
     key={categoryId}
     onPress={() => navigation.navigate('Занятия и Центры', { category: categoryId })}
     style={styles.categoryCard} // Use fixed styling for cards
   >
     <Image source={{ uri: imageUrl }} style={styles.categoryIcon} />
-    <Text style={styles.categoryText}>{title}</Text>
   </Pressable>
 );
+
 
 const styles = StyleSheet.create({
   container: {
@@ -202,11 +204,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bannerImage: {
-    width: '100%',
-    height: 200,
+    width: '100%',  // Take the full width of the screen
     borderRadius: 15,
     marginBottom: 10,
   },
+  
   section: {
     marginTop: 30,
     paddingHorizontal: 20,
@@ -231,14 +233,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between', // Even spacing between items
   },
   categoryCard: {
-    width: '30%', // Fixed width to ensure consistent size (adjust based on your layout needs)
-    height: 120, // Fixed height for uniformity
+    width: 100, // Set fixed width to 560 pixels
+    height: 100, // Set fixed height to 560 pixels
     backgroundColor: '#fff',
-    borderRadius: 10,
+    marginRight: 15,
+    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
-    padding: 10,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
@@ -246,10 +248,9 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   categoryIcon: {
-    width: 50,
-    height: 50,
-    marginBottom: 10,
-    resizeMode: 'contain',
+    width: '100%', // Make sure the image takes full width of the card
+    height: '100%', // Make sure the image takes full height of the card
+    resizeMode: 'cover', // Cover mode to fill the card with the image
   },
   categoryText: {
     fontSize: 14,

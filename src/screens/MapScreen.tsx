@@ -107,8 +107,8 @@ const MapScreen: React.FC = () => {
       setRegion({
         latitude: userLocation.latitude,
         longitude: userLocation.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        latitudeDelta: 0.02,
+        longitudeDelta: 0.02,
       });
     }
   }, [userLocation, centerId]);
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchBar: {
-    marginTop: 15,
+    // marginTop: 15,
     position: 'absolute',
     top: 20,
     left: 10,

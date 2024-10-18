@@ -1,6 +1,9 @@
+// types.ts
+
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 
+// Button Props
 export type ButtonProps = {
   title: string;
   onPress: () => void;
@@ -18,7 +21,7 @@ export type RootStackParamList = {
   "Занятие": { sectionId: number };
   "Регистрация": undefined;
   "Вход": undefined;
-  "Мои абонементы": undefined;  // Add this new route
+  "Мои абонементы": undefined;  // New route
   "Управление абонементом": { subscriptionId: number };
 };
 
@@ -28,6 +31,7 @@ export type UniversalNavigationProp = StackNavigationProp<RootStackParamList>;
 // Universal route prop for all screens
 export type UniversalRouteProp<T extends keyof RootStackParamList> = RouteProp<RootStackParamList, T>;
 
+// Specific Navigation and Route Props
 export type SectionDetailScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Занятие'>;
 export type SectionDetailScreenRouteProp = RouteProp<RootStackParamList, 'Занятие'>;
 
@@ -51,8 +55,8 @@ export interface Center {
   location: string;
   latitude: number | null;
   longitude: number | null;
-  qr_code: string | null; // assuming a URL for the QR code
-  image: string | null; // assuming a URL for the image
+  qr_code: string | null; // URL for the QR code
+  image: string | null; // URL for the image
   description: string | null;
 }
 
@@ -60,15 +64,16 @@ export interface Section {
   id: number;
   name: string;
   category: Category | number;
-  image: string | null; // Assuming a URL for the image
+  image: string | null; // URL for the image
   description: string | null;
-  centers: Center[]; // ManyToMany relationship with centers
+  centers: Center[]; // Many-to-Many relationship with centers
+  users: User[]; // Many-to-Many relationship with users
 }
 
 export interface Category {
   id: number;
   name: string;
-  image: string | null; // Assuming a URL for the image
+  image: string | null; // URL for the image
 }
 
 export interface User {
@@ -83,7 +88,7 @@ export interface User {
   is_staff: boolean;
   is_verified: boolean;
   date_joined: string;
-  parent?: User | null;
+  parent?: User | null; // Recursive relationship for parent users
 }
 
 export interface Subscription {
@@ -110,14 +115,13 @@ export interface Schedule {
 }
 
 export interface Record {
-  subscription: any;
+  subscription: Subscription;
   id: number;
   user: User;
   schedule: Schedule;
   attended: boolean;
   section: Section;
 }
-
 
 export interface Feedback {
   id: number;
@@ -126,4 +130,39 @@ export interface Feedback {
   stars: 1 | 2 | 3 | 4 | 5;
   center: Center;
   created_at: string;
+}
+
+// New Interfaces for Syllabus and Testing
+
+export interface Syllabus {
+  test_id: any;
+  id: number; // Corresponds to test_id
+  title: string;
+  content: string;
+  section: string; // Section name
+  questions: TestQuestion[];
+}
+
+export interface TestQuestion {
+  question_id: number;
+  question: string;
+  options: string[];
+  correct_answer: number;
+}
+
+export interface TestResult {
+  question: string;
+  chosen_answer: string;
+  correct_answer: string;
+  is_correct: boolean;
+  points: number;
+}
+
+// Optional: If you have a separate type for tests, you can define it as well
+export interface Test {
+  test_id: number;
+  title: string;
+  content: string;
+  section: string;
+  questions: TestQuestion[];
 }

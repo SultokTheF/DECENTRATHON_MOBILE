@@ -11,6 +11,7 @@ import {
   Linking,
   Modal,
   Dimensions,
+  Image
 } from 'react-native';
 import { axiosInstance, endpoints } from '../../api/apiClient';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -31,6 +32,7 @@ interface RecordType {
     capacity: number;
     reserved: number;
     status: boolean;
+    meeting_link: string | null; // Add this field
   };
   attended: boolean;
   subscription: {
@@ -47,6 +49,7 @@ interface RecordType {
   sectionName?: string;
   centerName?: string;
 }
+
 
 
 const MySubscriptionsScreen: React.FC = () => {
@@ -165,13 +168,12 @@ const MySubscriptionsScreen: React.FC = () => {
       fetchSubscriptions();
 
       // WhatsApp redirection with the specific phone number
-      const message = `Здравствуйте! Меня зовут ${user?.first_name} ${user?.last_name}. Я бы хотел купить подписку на ${
-        subscriptionType === 'MONTH'
-          ? 'месяц'
-          : subscriptionType === '6_MONTHS'
+      const message = `Здравствуйте! Меня зовут ${user?.first_name} ${user?.last_name}. Я бы хотел купить подписку на ${subscriptionType === 'MONTH'
+        ? 'месяц'
+        : subscriptionType === '6_MONTHS'
           ? '6 месяцев'
           : 'год'
-      }.`;
+        }.`;
       const phoneNumber = '77769955161'; // International format without symbols
       const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       const supported = await Linking.canOpenURL(url);
@@ -437,18 +439,36 @@ const MySubscriptionsScreen: React.FC = () => {
         {/* Promotional Banners */}
         <View style={styles.bannersContainer}>
           <Animatable.View animation="slideInRight" duration={800} style={styles.banner}>
-            <View style={styles.emptySquare}></View>
+            <Image
+              source={require('../../assets/images/Frame 1.png')} // Monthly subscription image
+              style={styles.bannerImage}
+              resizeMode="contain"
+              accessibilityLabel="Абонемент на месяц"
+            />
             <Text style={styles.bannerText}>Абонемент на месяц - 20 000 ₸</Text>
           </Animatable.View>
+
           <Animatable.View animation="slideInLeft" duration={800} style={styles.banner}>
-            <View style={styles.emptySquare}></View>
+            <Image
+              source={require('../../assets/images/Frame 2.png')} // 6 Months subscription image
+              style={styles.bannerImage}
+              resizeMode="contain"
+              accessibilityLabel="Абонемент на 6 месяцев"
+            />
             <Text style={styles.bannerText}>Абонемент на 6 месяцев - 100 000 ₸</Text>
           </Animatable.View>
+
           <Animatable.View animation="slideInRight" duration={800} style={styles.banner}>
-            <View style={styles.emptySquare}></View>
+            <Image
+              source={require('../../assets/images/Frame 3.png')} // Yearly subscription image
+              style={styles.bannerImage}
+              resizeMode="contain"
+              accessibilityLabel="Абонемент на год"
+            />
             <Text style={styles.bannerText}>Абонемент на год - 180 000 ₸</Text>
           </Animatable.View>
         </View>
+
       </ScrollView>
 
       {/* Bottom Sheet for Subscription Purchase */}
@@ -563,6 +583,21 @@ const MySubscriptionsScreen: React.FC = () => {
                   <Text style={styles.modalText}>
                     <Icon name="check-circle-outline" size={20} /> Посетил:{' '}
                     {record.attended ? 'Да' : 'Нет'}
+                  </Text>
+
+                  {/* Урок column */}
+                  <Text style={styles.lessonText}>
+                    Урок:{' '}
+                    {!record.schedule.meeting_link ? (
+                      <Text style={styles.notStartedText}>не начался</Text>
+                    ) : (
+                      <Text
+                        onPress={() => Linking.openURL(record.schedule.meeting_link)}
+                        style={styles.meetingLinkText}
+                      >
+                        Перейти на собрание
+                      </Text>
+                    )}
                   </Text>
 
                   {!record.is_canceled && (
@@ -739,11 +774,43 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
   },
+  bannerImage: { // ← Add this style
+    width: '100%', // Makes the image take full width of the banner
+    height: 150,    // Adjust the height as needed
+    marginBottom: 10, // Space between image and text
+    borderRadius: 10,  // Optional: Rounded corners
+  },
   bannerText: {
     fontSize: 16,
     color: '#333',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  lessonText: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: '#555',
+  },
+  meetingLinkText: {
+    fontSize: 16,
+    color: '#007aff', // Blue color for the link
+    textDecorationLine: 'underline', // Underlined text to resemble a link
+  },
+  notStartedText: {
+    fontSize: 16,
+    color: '#FF6347', // Red color for "не начался"
+  },
+  meetingButton: {
+    marginTop: 5,
+    backgroundColor: '#007aff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  meetingButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
   bottomSheetContainer: {
     padding: 20,
