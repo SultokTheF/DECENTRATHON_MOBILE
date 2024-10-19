@@ -246,7 +246,7 @@ const SectionDetailScreen: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      await axiosInstance.post(`${endpoints.RECORDS}/`, {
+      await axiosInstance.post(`${endpoints.RECORDS}`, {
         schedule: selectedSchedule,
         subscription: selectedSubscription,
       });

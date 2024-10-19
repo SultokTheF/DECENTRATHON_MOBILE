@@ -1,10 +1,8 @@
-// apiConfig.ts
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define your API base URL here
-const API_BASE_URL = process.env.API_BASE_URL || 'http://10.73.62.120:8000/';
+const API_BASE_URL = process.env.API_BASE_URL || 'http://192.168.0.14:8000/';
 
 // Create an Axios instance
 const axiosInstance = axios.create({
@@ -32,6 +30,7 @@ const endpoints = {
   SUBMIT_TEST: 'api/submit_test/', // Endpoint to submit test answers
   GET_SYLLABUSES: 'api/get_tests/', // Endpoint to fetch syllabuses for a section
   GET_TEST_BY_ID: 'api/get_test/', // Endpoint to fetch a specific test by its ID
+  ANSWER: 'api/answer/', // Endpoint to submit answers for a test
 };
 
 // Function to get the access token from AsyncStorage
