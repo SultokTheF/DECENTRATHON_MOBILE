@@ -174,7 +174,7 @@ const MySubscriptionsScreen: React.FC = () => {
           ? '6 месяцев'
           : 'год'
         }.`;
-      const phoneNumber = '77769955161'; // International format without symbols
+      const phoneNumber = '7757064732'; // International format without symbols
       const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
       const supported = await Linking.canOpenURL(url);
 
